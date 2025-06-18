@@ -78,10 +78,10 @@ const CreativeWriterTool: React.FC = () => {
     }
   }, [poemParams]);
   
-  const resetOutput = () => {
+  const resetOutput = useCallback(() => {
     setGeneratedContent(null);
     setError(null);
-  }
+  },[]);
 
   const switchMode = (mode: WritingMode) => {
     setActiveMode(mode);
@@ -100,6 +100,7 @@ const CreativeWriterTool: React.FC = () => {
                           ? 'border-b-2 border-sky-600 dark:border-sky-500 text-sky-600 dark:text-sky-400' 
                           : 'text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300'
                         }`}
+            aria-current={activeMode === mode ? "page" : undefined}
           >
             {mode}
           </button>
@@ -131,6 +132,7 @@ const CreativeWriterTool: React.FC = () => {
             isLoading={isLoading}
             error={error}
             title={activeMode === WritingMode.STORY ? "Story" : "Poem"}
+            onGenerateNew={resetOutput}
           />
         </div>
       </div>

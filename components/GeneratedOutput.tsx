@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import LoadingIndicator from './ui/LoadingIndicator';
-import { CopyIcon, DownloadIcon } from '../constants';
+import { CopyIcon, DownloadIcon, DocumentPlusIcon } from '../constants';
 import Button from './ui/Button';
 import { ThemeContext } from '../contexts/ThemeContext';
 
@@ -9,9 +9,10 @@ interface GeneratedOutputProps {
   isLoading: boolean;
   error: string | null;
   title: string;
+  onGenerateNew: () => void;
 }
 
-const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, error, title }) => {
+const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, error, title, onGenerateNew }) => {
   const [copied, setCopied] = useState(false);
   const { theme } = useContext(ThemeContext);
 
@@ -51,10 +52,19 @@ const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, e
     return <LoadingIndicator text={`Generating your ${title.toLowerCase()}...`} />;
   }
 
+  const showActions = content || error;
+
   if (error) {
     return (
       <div className="p-6 bg-red-100 dark:bg-red-900/80 dark:border dark:border-red-700 rounded-lg shadow-xl text-red-700 dark:text-red-200">
-        <h3 className="text-xl font-semibold mb-2 text-red-800 dark:text-red-100">Error Generating {title}</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-red-800 dark:text-red-100">Error Generating {title}</h3>
+          {showActions && (
+             <Button onClick={onGenerateNew} variant="secondary" Icon={DocumentPlusIcon} className="px-3 py-1.5 text-sm" type="button" title="Start a new generation">
+                New
+            </Button>
+          )}
+        </div>
         <p className="whitespace-pre-wrap">{error}</p>
         <p className="mt-4 text-sm">Please check your inputs, ensure your API key is correctly configured in the environment, and try again.</p>
       </div>
@@ -74,14 +84,19 @@ const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, e
     <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl dark:border dark:border-slate-600 flex flex-col h-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-semibold text-sky-700 dark:text-sky-300">{title} Output</h3>
+        {showActions && (
         <div className="flex space-x-2">
-          <Button onClick={handleCopy} variant="secondary" Icon={CopyIcon} className="px-3 py-1.5 text-sm" type="button">
+          <Button onClick={handleCopy} variant="secondary" Icon={CopyIcon} className="px-3 py-1.5 text-sm" type="button" title="Copy to clipboard">
             {copied ? 'Copied!' : 'Copy'}
           </Button>
-          <Button onClick={handleDownload} variant="secondary" Icon={DownloadIcon} className="px-3 py-1.5 text-sm" type="button">
+          <Button onClick={handleDownload} variant="secondary" Icon={DownloadIcon} className="px-3 py-1.5 text-sm" type="button" title="Download as .txt">
             Download
           </Button>
+           <Button onClick={onGenerateNew} variant="secondary" Icon={DocumentPlusIcon} className="px-3 py-1.5 text-sm" type="button" title="Start a new generation">
+            New
+          </Button>
         </div>
+        )}
       </div>
       <div 
         className={`prose prose-sm max-w-none 
@@ -90,6 +105,8 @@ const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, e
                     p-4 rounded-md overflow-x-auto overflow-y-auto whitespace-pre-wrap 
                     leading-relaxed text-slate-800 dark:text-slate-200 min-h-[200px] max-h-[60vh]
                     border border-slate-200 dark:border-slate-600 flex-grow`}
+        aria-live="polite"
+        role="article"
       >
         {content}
       </div>
