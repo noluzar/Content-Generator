@@ -71,7 +71,7 @@ const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, e
   }
 
   return (
-    <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl dark:border dark:border-slate-600">
+    <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl dark:border dark:border-slate-600 flex flex-col h-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-semibold text-sky-700 dark:text-sky-300">{title} Output</h3>
         <div className="flex space-x-2">
@@ -87,9 +87,9 @@ const GeneratedOutput: React.FC<GeneratedOutputProps> = ({ content, isLoading, e
         className={`prose prose-sm max-w-none 
                     ${theme === 'dark' ? 'prose-invert' : ''} 
                     bg-gray-50 dark:bg-slate-700/60 
-                    p-4 rounded-md overflow-x-auto whitespace-pre-wrap 
-                    leading-relaxed text-slate-800 dark:text-slate-200 min-h-[200px]
-                    border border-slate-200 dark:border-slate-600`}
+                    p-4 rounded-md overflow-x-auto overflow-y-auto whitespace-pre-wrap 
+                    leading-relaxed text-slate-800 dark:text-slate-200 min-h-[200px] max-h-[60vh]
+                    border border-slate-200 dark:border-slate-600 flex-grow`}
       >
         {content}
       </div>
